@@ -1,5 +1,6 @@
 "use client";
 import { authClient } from "@/lib/auth-client";
+import Link from "next/link";
 import { useState } from "react";
 
 export default function SigninPage() {
@@ -67,6 +68,7 @@ const { data, error } = await authClient.signUp.email({
                   </svg>
                   <span className="ml-3">Sign Up</span>
                 </button>
+                <p>Already have an account?<Link href="/signin">Sign in</Link></p>
                 <p className="mt-6 text-xs text-gray-600 text-center">
                   I agree to abide by
                   <a
