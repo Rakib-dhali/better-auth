@@ -2,6 +2,7 @@ import { betterAuth } from "better-auth";
 import { mongodbAdapter } from "better-auth/adapters/mongodb";
 import { Resend } from "resend";
 import client from "./mongodb";
+import { emailOTP } from "better-auth/plugins";
 
 const db = client.db();
 const resend = new Resend(process.env.RESEND_API_KEY);
@@ -25,9 +26,12 @@ async function sendEmail({
 
 export const auth = betterAuth({
   database: mongodbAdapter(db),
-  // socialProviders:{
-
-  // },
+  socialProviders: {
+    google: {
+      clientId: process.env.GOOGLE_CLIENT_ID as string,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
+    },
+  },
   emailAndPassword: {
     enabled: true,
     requireEmailVerification: true,
@@ -38,7 +42,7 @@ export const auth = betterAuth({
         text: "Someone tried to create an account using your email address. If this was you, try signing in instead. If not, you can safely ignore this email.",
       });
     },
-  }, // <-- this closing brace was missing
+  },
   emailVerification: {
     sendOnSignUp: true,
     sendVerificationEmail: async ({ user, url }) => {
@@ -54,4 +58,17 @@ export const auth = betterAuth({
       });
     },
   },
-});
+  plugins: [
+     emailOTP({ 
+            async sendVerificationOTP({ email, otp, type }) { 
+                if (type === "sign-in") { 
+                    // Send the OTP for sign in
+                } else if (type === "email-verification") { 
+                    // Send the OTP for email verification
+                } else { 
+                    // Send the OTP for password reset
+                } 
+            }, 
+        }) 
+  ]
+})

@@ -25,6 +25,10 @@ export default function SignupPage() {
 
     setLoading(false);
 
+    await authClient.verifyEmail({
+      
+    })
+
     if (error) {
       setErrorMsg(error.message ?? "Something went wrong. Please try again.");
       return;
@@ -35,6 +39,11 @@ export default function SignupPage() {
     }
   };
 
+  const signInWithGoogle = async () => {
+  const data = await authClient.signIn.social({
+    provider: "google",
+  });
+};
   const resendVerificationEmail = async () => {
     await authClient.sendVerificationEmail({
       email,
@@ -46,6 +55,10 @@ export default function SignupPage() {
     <div className="min-h-screen bg-gray-100 text-gray-900 flex justify-center">
       <div className="max-w-7xl m-0 sm:m-10 bg-white shadow sm:rounded-lg flex justify-center flex-1">
         <div className="lg:w-1/2 xl:w-5/12 p-6 sm:p-12">
+
+        <div className="google bg-green-500 text-2xl text-gray-500 font-bold p-4 rounded-lg">
+          <button className="cursor-pointer bg-amber-100 rounded-full p-3" onClick={signInWithGoogle}>Sign in with Google</button>
+        </div>
           <div className="mt-12 flex flex-col items-center">
 
             {submitted ? (
