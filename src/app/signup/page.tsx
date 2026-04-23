@@ -25,10 +25,6 @@ export default function SignupPage() {
 
     setLoading(false);
 
-    await authClient.verifyEmail({
-      
-    })
-
     if (error) {
       setErrorMsg(error.message ?? "Something went wrong. Please try again.");
       return;
@@ -40,9 +36,19 @@ export default function SignupPage() {
   };
 
   const signInWithGoogle = async () => {
-  const data = await authClient.signIn.social({
+  const {data, error} = await authClient.signIn.social({
     provider: "google",
+    callbackURL: "/dashboard",
   });
+
+   if (error) {
+    setErrorMsg(error.message ?? "Google sign-in failed.");
+    return;
+  }
+
+  if (data?.url) {
+    window.location.href = data.url;
+  }
 };
   const resendVerificationEmail = async () => {
     await authClient.sendVerificationEmail({
